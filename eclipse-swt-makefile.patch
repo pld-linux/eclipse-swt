@@ -1,11 +1,11 @@
---- make_linux.mak.orig	2004-10-22 17:48:31.000000000 +0200
-+++ make_linux.mak	2004-10-22 17:48:45.286049824 +0200
-@@ -43,13 +43,13 @@
+--- make_linux.mak.orig	2004-12-29 14:32:46.000000000 +0000
++++ make_linux.mak	2004-12-29 15:38:05.808760592 +0000
+@@ -44,13 +44,13 @@
  GNOMECFLAGS = `pkg-config --cflags gnome-vfs-module-2.0 libgnome-2.0 libgnomeui-2.0`
- GNOMELIBS = `pkg-config --libs gnome-vfs-module-2.0 libgnome-2.0 libgnomeui-2.0`
+ GNOMELIBS = `pkg-config --libs-only-L gnome-vfs-module-2.0 libgnome-2.0 libgnomeui-2.0` -lgnomevfs-2 -lgnome-2 -lgnomeui-2
  
--KDE_LIBS = -L/usr/lib  -L$(QT_HOME)/lib -shared  -lkdecore -lqt -lkparts
--KDE_CFLAGS = -fno-rtti -c -O -I/usr/include/kde -I$(QT_HOME)/include -I$(JAVA_HOME)/include
+-KDE_LIBS = -shared -L$(KDE_LIB_PATH) -lkdecore -lkparts -L$(QT_HOME)/lib -lqt
+-KDE_CFLAGS = -fno-rtti -c -O -I$(KDE_INCLUDE_PATH) -I$(QT_HOME)/include -I$(JAVA_HOME)/include
 +KDE_LIBS = -shared -lkdecore -lqt-mt -lkparts
 +KDE_CFLAGS = -fno-rtti -c $(OPT) `pkg-config --cflags qt-mt`
  
@@ -13,37 +13,30 @@
  #NATIVE_STATS = -DNATIVE_STATS
  
 -MOZILLACFLAGS = -O \
-+MOZILLACFLAGS = $(OPT) \
+++MOZILLACFLAGS = $(OPT) \
  	-DXPCOM_GLUE=1 \
  	-DMOZILLA_STRICT_API=1 \
  	-fno-rtti \
-@@ -59,18 +59,14 @@
+@@ -60,10 +60,15 @@
  	-Wno-non-virtual-dtor \
  	-fPIC \
  	-I./ \
--	-I$(GECKO_SDK)	\
--	-include $(GECKO_SDK)/mozilla-config.h \
--	-I$(GECKO_SDK)/nspr/include \
--	-I$(GECKO_SDK)/xpcom/include \
--	-I$(GECKO_SDK)/string/include \
--	-I$(GECKO_SDK)/embed_base/include \
--	-I$(GECKO_SDK)/embedstring/include
+-	${GECKO_INCLUDES} \
+-	${SWT_PTR_CFLAGS}
 +	$(JAVA_INC) \
 +	-include /usr/include/mozilla/mozilla-config.h \
 +	-I/usr/include/nspr \
 +	-I/usr/include/mozilla/xpcom \
 +	-I/usr/include/mozilla/string \
 +	-I/usr/include/mozilla/embed_base
- MOZILLALIBS = -shared -Wl,--version-script=mozilla_exports -Bsymbolic \
--	-L$(GECKO_SDK)/embedstring/bin -lembedstring \
--	-L$(GECKO_SDK)/embed_base/bin -lembed_base_s \
--	-L$(GECKO_SDK)/xpcom/bin -lxpcomglue_s -lxpcom \
--	-L$(GECKO_SDK)/nspr/bin -lnspr4 -lplds4 -lplc4
+ 	
+-MOZILLALIBS = -shared -Wl,--version-script=mozilla_exports -Bsymbolic ${GECKO_LIBS}
++MOZILLALIBS = -shared -Wl,--version-script=mozilla_exports -Bsymbolic \
 +	-lembedcomponents -lxpcomglue_s -lxpcom -lnspr4 -lplds4 -lplc4
- 
+ 	
  SWT_OBJECTS = swt.o callback.o
  AWT_OBJECTS = swt_awt.o
-@@ -80,11 +76,11 @@
+@@ -73,11 +78,11 @@
  KDE_OBJS = swt.o kde.o kde_stats.o
  MOZILLA_OBJECTS = swt.o xpcom.o xpcom_custom.o xpcom_structs.o xpcom_stats.o
   
@@ -57,27 +50,29 @@
  		-fpic \
  		${SWT_PTR_CFLAGS}
  LIBS = -shared -fpic
-@@ -98,16 +94,16 @@
+@@ -91,16 +96,16 @@
  make_swt: $(SWT_LIB) $(SWTPI_LIB)
  
  $(SWT_LIB): $(SWT_OBJECTS)
 -	$(LD) $(LIBS) -o $(SWT_LIB) $(SWT_OBJECTS)
+-
 +	$(CC) $(LIBS) -o $(SWT_LIB) $(SWT_OBJECTS)
- 
++	
  callback.o: callback.c callback.h
  	$(CC) $(CFLAGS) -c callback.c
  
  $(SWTPI_LIB): $(SWTPI_OBJECTS)
 -	$(LD) $(LIBS) $(GTKLIBS) -o $(SWTPI_LIB) $(SWTPI_OBJECTS)
+-
 +	$(CC) $(LIBS) $(GTKLIBS) -o $(SWTPI_LIB) $(SWTPI_OBJECTS)
- 
++	
  swt.o: swt.c swt.h
 -	$(CC) $(CFLAGS) -c swt.c
 +	$(CC) $(CFLAGS) $(JAVA_INC) -c swt.c
  os.o: os.c os.h swt.h os_custom.h
  	$(CC) $(CFLAGS) $(GTKCFLAGS) -c os.c
  os_structs.o: os_structs.c os_structs.h os.h swt.h
-@@ -123,7 +119,7 @@
+@@ -116,7 +121,7 @@
  make_awt:$(AWT_LIB)
  
  $(AWT_LIB): $(AWT_OBJECTS)
@@ -86,7 +81,7 @@
  
  #
  # Atk lib
-@@ -131,7 +127,7 @@
+@@ -124,7 +129,7 @@
  make_atk: $(ATK_LIB)
  
  $(ATK_LIB): $(ATK_OBJECTS)
@@ -95,7 +90,7 @@
  
  atk.o: atk.c atk.h
  	$(CC) $(CFLAGS) $(ATKCFLAGS) -c atk.c
-@@ -148,7 +144,7 @@
+@@ -141,7 +146,7 @@
  make_gnome: $(GNOME_LIB)
  
  $(GNOME_LIB): $(GNOME_OBJECTS)
@@ -104,7 +99,7 @@
  
  gnome.o: gnome.c 
  	$(CC) $(CFLAGS) $(GNOMECFLAGS) -c gnome.c
-@@ -165,7 +161,7 @@
+@@ -158,7 +163,7 @@
  make_kde: $(KDE_LIB)
  
  $(KDE_LIB): $(KDE_OBJS)
