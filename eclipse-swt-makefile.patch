@@ -1,0 +1,69 @@
+--- make_gtk.mak.orig	2004-06-25 18:28:00.000000000 +0200
++++ make_gtk.mak	2004-07-09 17:20:54.618388592 +0200
+@@ -24,13 +24,13 @@
+ 
+ ifeq ($(SWT_PTR_CFLAGS),-DSWT_PTR_SIZE_64)
+ # 64 bit path
+-JAVA_HOME		= /bluebird/teamswt/swt-builddir/jdk1.5.0
++JAVA_HOME		= /usr/lib64/java
+ AWT_LIB_PATH	= $(JAVA_HOME)/jre/lib/amd64
+ XTEST_LIB_PATH  = /usr/X11R6/lib64
+ else
+ # 32 bit path
+-JAVA_HOME		= /bluebird/teamswt/swt-builddir/IBMJava2-141
+-AWT_LIB_PATH	= $(JAVA_HOME)/jre/bin
++JAVA_HOME		= /usr/lib/java
++AWT_LIB_PATH	= $(JAVA_HOME)/jre/lib/i386
+ XTEST_LIB_PATH  = /usr/X11R6/lib
+ endif
+ 
+@@ -63,19 +63,20 @@
+ GNOMECFLAGS = `pkg-config --cflags gnome-vfs-module-2.0 libgnome-2.0 libgnomeui-2.0`
+ GNOMELIBS = `pkg-config --libs gnome-vfs-module-2.0 libgnome-2.0 libgnomeui-2.0`
+ 
+-MOZILLACFLAGS = -O \
++MOZILLACFLAGS = $(OPT) \
+ 	-fno-rtti	\
+ 	-Wall	\
+ 	-I./ \
+-	-I$(JAVA_HOME)	\
+-	-include $(MOZILLA_HOME)/include/mozilla-config.h \
+-	-I$(MOZILLA_HOME)/include \
+-	-I$(MOZILLA_HOME)/include/xpcom \
+-	-I$(MOZILLA_HOME)/include/string \
+-	-I$(MOZILLA_HOME)/include/nspr \
+-	-I$(MOZILLA_HOME)/include/embed_base \
+-	-I$(MOZILLA_HOME)/include/gfx
+-MOZILLALIBS = -L$(MOZILLA_HOME)/lib -lembed_base_s -lxpcom
++	-I$(JAVA_HOME)/include \
++	-I$(JAVA_HOME)/include/linux \
++	-include /usr/include/mozilla/mozilla-config.h \
++	-I/usr/include/mozilla \
++	-I/usr/include/mozilla/embed_base \
++	-I/usr/include/mozilla/gfx \
++	-I/usr/include/mozilla/string \
++	-I/usr/include/mozilla/xpcom \
++	-I/usr/include/nspr
++MOZILLALIBS = -L/usr/lib/mozilla/components -lembedcomponents -lxpcom
+ MOZILLALDFLAGS = -s
+ 
+ SWT_OBJECTS		= swt.o callback.o
+@@ -85,14 +86,15 @@
+ GNOME_OBJECTS	= swt.o gnome.o gnome_structs.o gnome_stats.o
+ MOZILLA_OBJECTS = xpcom.o
+  
+-CFLAGS = -O -Wall \
++CFLAGS = $(OPT) -Wall \
+ 		-DSWT_VERSION=$(SWT_VERSION) \
+ 		-DLINUX -DGTK \
+ 		-I$(JAVA_HOME)/include \
+-		-fpic \
++		-I$(JAVA_HOME)/include/linux \
++		-fPIC \
+ 		${SWT_PTR_CFLAGS}
+ 
+-LIBS = -shared -fpic
++LIBS = -shared -fPIC
+ 
+ #
+ #  Target Rules
