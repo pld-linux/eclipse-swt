@@ -30,7 +30,7 @@
 -	-I$(GECKO_SDK)/embedstring/include
 +	$(JAVA_INC) \
 +	-include /usr/include/mozilla/mozilla-config.h \
-+	-I/usr/include/nspr/include \
++	-I/usr/include/nspr \
 +	-I/usr/include/mozilla/xpcom \
 +	-I/usr/include/mozilla/string \
 +	-I/usr/include/mozilla/embed_base
