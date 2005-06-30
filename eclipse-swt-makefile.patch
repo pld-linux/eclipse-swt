@@ -1,28 +1,20 @@
---- make_linux.mak.orig	2004-12-29 14:32:46.000000000 +0000
-+++ make_linux.mak	2004-12-29 15:38:05.808760592 +0000
-@@ -44,13 +44,13 @@
- GNOMECFLAGS = `pkg-config --cflags gnome-vfs-module-2.0 libgnome-2.0 libgnomeui-2.0`
- GNOMELIBS = `pkg-config --libs-only-L gnome-vfs-module-2.0 libgnome-2.0 libgnomeui-2.0` -lgnomevfs-2 -lgnome-2 -lgnomeui-2
- 
--KDE_LIBS = -shared -L$(KDE_LIB_PATH) -lkdecore -lkparts -L$(QT_HOME)/lib -lqt
--KDE_CFLAGS = -fno-rtti -c -O -I$(KDE_INCLUDE_PATH) -I$(QT_HOME)/include -I$(JAVA_HOME)/include
-+KDE_LIBS = -shared -lkdecore -lqt-mt -lkparts
-+KDE_CFLAGS = -fno-rtti -c $(OPT) `pkg-config --cflags qt-mt`
- 
+--- make_linux.mak.orig	2005-06-27 20:53:36.000000000 +0200
++++ make_linux.mak	2005-06-30 22:05:11.000000000 +0200
+@@ -50,7 +50,7 @@
  # Uncomment for Native Stats tool
  #NATIVE_STATS = -DNATIVE_STATS
  
 -MOZILLACFLAGS = -O \
-++MOZILLACFLAGS = $(OPT) \
++MOZILLACFLAGS = $(OPT) \
  	-DXPCOM_GLUE=1 \
  	-DMOZILLA_STRICT_API=1 \
  	-fno-rtti \
-@@ -60,10 +60,15 @@
- 	-Wno-non-virtual-dtor \
- 	-fPIC \
- 	-I./ \
--	${GECKO_INCLUDES} \
+@@ -63,7 +63,13 @@
+ 	-I$(JAVA_HOME)/include \
+ 	-I$(JAVA_HOME)/include/linux \
+ 	${GECKO_INCLUDES} \
 -	${SWT_PTR_CFLAGS}
++	${SWT_PTR_CFLAGS} \
 +	$(JAVA_INC) \
 +	-include /usr/include/mozilla/mozilla-config.h \
 +	-I/usr/include/nspr \
@@ -30,14 +22,10 @@
 +	-I/usr/include/mozilla/string \
 +	-I/usr/include/mozilla/embed_base
  	
--MOZILLALIBS = -shared -Wl,--version-script=mozilla_exports -Bsymbolic ${GECKO_LIBS}
-+MOZILLALIBS = -shared -Wl,--version-script=mozilla_exports -Bsymbolic \
-+	-lembedcomponents -lxpcomglue_s -lxpcom -lnspr4 -lplds4 -lplc4
+ MOZILLALIBS = -shared -s -Wl,--version-script=mozilla_exports -Bsymbolic ${GECKO_LIBS}
  	
- SWT_OBJECTS = swt.o callback.o
- AWT_OBJECTS = swt_awt.o
-@@ -73,11 +78,11 @@
- KDE_OBJS = swt.o kde.o kde_stats.o
+@@ -75,14 +81,15 @@
+ GNOME_OBJECTS = swt.o gnome.o gnome_structs.o gnome_stats.o
  MOZILLA_OBJECTS = swt.o xpcom.o xpcom_custom.o xpcom_structs.o xpcom_stats.o
   
 -CFLAGS = -O -Wall \
@@ -45,12 +33,16 @@
  		-DSWT_VERSION=$(SWT_VERSION) \
  		$(NATIVE_STATS) \
  		-DLINUX -DGTK \
--		-I$(JAVA_HOME)/include \
-+		$(JAVA_INC) \
+ 		-I$(JAVA_HOME)/include \
+ 		-I$(JAVA_HOME)/include/linux \
  		-fpic \
- 		${SWT_PTR_CFLAGS}
- LIBS = -shared -fpic
-@@ -91,16 +96,16 @@
+-		${SWT_PTR_CFLAGS}
++		${SWT_PTR_CFLAGS} \
++		$(JAVA_INC)
+ LIBS = -shared -fpic -s
+ 
+ 
+@@ -94,16 +101,16 @@
  make_swt: $(SWT_LIB) $(SWTPI_LIB)
  
  $(SWT_LIB): $(SWT_OBJECTS)
@@ -72,7 +64,7 @@
  os.o: os.c os.h swt.h os_custom.h
  	$(CC) $(CFLAGS) $(GTKCFLAGS) -c os.c
  os_structs.o: os_structs.c os_structs.h os.h swt.h
-@@ -116,7 +121,7 @@
+@@ -136,7 +143,7 @@
  make_awt:$(AWT_LIB)
  
  $(AWT_LIB): $(AWT_OBJECTS)
@@ -81,7 +73,7 @@
  
  #
  # Atk lib
-@@ -124,7 +129,7 @@
+@@ -144,7 +151,7 @@
  make_atk: $(ATK_LIB)
  
  $(ATK_LIB): $(ATK_OBJECTS)
@@ -90,7 +82,7 @@
  
  atk.o: atk.c atk.h
  	$(CC) $(CFLAGS) $(ATKCFLAGS) -c atk.c
-@@ -141,7 +146,7 @@
+@@ -161,7 +168,7 @@
  make_gnome: $(GNOME_LIB)
  
  $(GNOME_LIB): $(GNOME_OBJECTS)
@@ -99,12 +91,3 @@
  
  gnome.o: gnome.c 
  	$(CC) $(CFLAGS) $(GNOMECFLAGS) -c gnome.c
-@@ -158,7 +163,7 @@
- make_kde: $(KDE_LIB)
- 
- $(KDE_LIB): $(KDE_OBJS)
--	$(LD) -o $@ $(KDE_OBJS) $(KDE_LIBS)
-+	$(CXX) -o $@ $(KDE_OBJS) $(KDE_LIBS)
- 
- kde.o: kde.cpp
- 	$(CXX) $(CFLAGS) $(KDE_CFLAGS) -o kde.o kde.cpp
