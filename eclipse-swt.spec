@@ -1,7 +1,7 @@
 #
 # Conditional build:
 %bcond_without	gnome		# build without gnome
-
+%bcond_without	cairo		# build without cairo
 #
 %define   _buildid  200506271435
 #define   _mver   M6
