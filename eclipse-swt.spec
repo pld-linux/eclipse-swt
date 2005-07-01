@@ -30,38 +30,46 @@
 %define         _noautostrip  .*\\.so
 %endif
 
-Summary:	SWT is a widget toolkit for Java
+Summary:	SWT - a widget toolkit for Java
+Summary(pl):	SWT - zestaw widgetów dla Javy
 Name:		eclipse-swt
-Version:  %{_ver_major}
-#Release: 0.%{_mver}_%{_buildid}.1
-Release:  0.1
-License:  CPL v1.0
-Group:    Libraries
-#Source0: http://download.eclipse.org/downloads/drops/S-%{_ver_major}%{_mver}-%{_buildid}/eclipse-sourceBuild-srcIncluded-%{_ver_major}%{_mver}.zip
-Source0:  http://download.eclipse.org/eclipse/downloads/drops/R-%{_ver_major}-%{_buildid}/eclipse-sourceBuild-srcIncluded-%{_ver_major}.zip
+Version:	%{_ver_major}
+#Release:	0.%{_mver}_%{_buildid}.1
+Release:	0.1
+License:	CPL v1.0
+Group:		Libraries
+#Source0:	http://download.eclipse.org/downloads/drops/S-%{_ver_major}%{_mver}-%{_buildid}/eclipse-sourceBuild-srcIncluded-%{_ver_major}%{_mver}.zip
+Source0:	http://download.eclipse.org/eclipse/downloads/drops/R-%{_ver_major}-%{_buildid}/eclipse-sourceBuild-srcIncluded-%{_ver_major}.zip
 # Source0-md5:  19ad65d52005da5eaa1d3687b3a50de2
-Patch0:         %{name}-NULL.patch
-Patch1:         %{name}-makefile.patch
-Patch2:         %{name}-nognome.patch
+Patch0:		%{name}-NULL.patch
+Patch1:		%{name}-makefile.patch
+Patch2:		%{name}-nognome.patch
 URL:		http://www.eclipse.org/swt
-BuildRequires:  jakarta-ant >= 1.6.1
-BuildRequires:  jdk >= 1.4
-BuildRequires:  pkgconfig
-BuildRequires:  rpmbuild(macros) >= 1.213
-BuildRequires:  unzip
-BuildRequires:  zip
-BuildRequires:  mozilla-devel
-BuildRequires:  atk-devel
-%{?with_gnome:BuildRequires:  libgnomeui-devel}
-BuildRequires:  gtk+2-devel
+BuildRequires:	atk-devel
 %{?with_cairo:BuildRequires:  cairo-devel}
-Requires: jakarta-ant
-Requires: jdk >= 1.4
-ExclusiveArch:  %{ix86} %{x8664} ppc
+BuildRequires:  gtk+2-devel >= 2.0.0
+BuildRequires:	jakarta-ant >= 1.6.1
+BuildRequires:	jdk >= 1.4
+%{?with_gnome:BuildRequires:  libgnomeui-devel}
+BuildRequires:	mozilla-devel
+BuildRequires:	pkgconfig
+BuildRequires:	rpmbuild(macros) >= 1.213
+BuildRequires:	unzip
+BuildRequires:	zip
+Requires:	jakarta-ant
+Requires:	jdk >= 1.4
+ExclusiveArch:	%{ix86} %{x8664} ppc
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
-SWT is a widget toolkit for Java designed to provide efficient, portable access to the user-interface facilities of the operating systems on which it is implemented.
+SWT is a widget toolkit for Java designed to provide efficient,
+portable access to the user-interface facilities of the operating
+systems on which it is implemented.
+
+%description -l pl
+SWT to zestaw widgetów dla Javy zaprojektowany aby dostarczyæ wydajny,
+przeno¶ny dostêp do udogodnieñ interfejsu u¿ytkownika na tych
+systemach operacyjnych, na których zosta³ zaimplementowany.
 
 %prep
 %setup -q -c
@@ -113,8 +121,6 @@ cd swt
 #    OPT="%{rpmcflags}"
 cd ..
 
-
-
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_libdir}/swt/%{_swtgtkdir}_%{_ver_major}.%{_ver_minor}/os/linux/%{_eclipse_arch}
@@ -129,13 +135,12 @@ install libcairo.so* $RPM_BUILD_ROOT%{_libdir}/swt
 install *.html $RPM_BUILD_ROOT%{_libdir}/swt
 cp -rf about_files $RPM_BUILD_ROOT%{_libdir}/swt
 
-
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-
 %files
 %defattr(644,root,root,755)
+%dir %{_libdir}/swt
 %dir %{_libdir}/swt/%{_swtgtkdir}_*.*.*
 %dir %{_libdir}/swt/%{_swtgtkdir}_*.*.*/os
 %dir %{_libdir}/swt/%{_swtgtkdir}_*.*.*/os/linux
