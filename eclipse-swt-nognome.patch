@@ -1,0 +1,7 @@
+--- make_linux.mak.gnome	2005-06-30 22:11:57.000000000 +0200
++++ make_linux.mak	2005-06-30 22:12:08.000000000 +0200
+@@ -95,3 +95,3 @@
+ 
+-all: make_swt make_atk make_gnome make_awt
++all: make_swt make_atk make_awt
+ 
