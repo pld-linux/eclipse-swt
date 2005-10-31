@@ -79,7 +79,6 @@ cd %{_swtsrcdir}
 ant src.zip
 
 %build
-%if 0
 rm -rf swt
 mkdir swt 
 cd swt
@@ -91,11 +90,10 @@ patch -p0 < %{PATCH1}
 %if %{without gnome}
 patch -p0 < %{PATCH2}
 %endif
-%endif 
+
 JAVA_HOME=%{_libdir}/java
 export JAVA_HOME
 export JAVA_INC="-I$JAVA_HOME/include -I$JAVA_HOME/include/linux"
-cd swt
 %{__make} -f make_linux.mak all \
     CC="%{__cc}" \
     CXX="%{__cxx}" \
@@ -119,7 +117,6 @@ cd swt
 #cp library/* .
 #{__make} -f make_linux.mak make_mozilla \
 #    OPT="%{rpmcflags}"
-cd ..
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -150,7 +147,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/swt/%{_swtgtkdir}_*.*.*/os/linux/%{_eclipse_arch}/libswt-atk-gtk-*.so
 %attr(755,root,root) %{_libdir}/swt/%{_swtgtkdir}_*.*.*/os/linux/%{_eclipse_arch}/libswt-awt-gtk-*.so
 %if %{with gnome}
-%attr(755,root,root) %{_swtgtkdir}_*.*.*/os/linux/%{_eclipse_arch}/libswt-gnome-gtk-*.so
+%attr(755,root,root) %{_libdir}/swt/%{_swtgtkdir}_*.*.*/os/linux/%{_eclipse_arch}/libswt-gnome-gtk-*.so
 %endif
 %attr(755,root,root) %{_libdir}/swt/%{_swtgtkdir}_*.*.*/os/linux/%{_eclipse_arch}/libswt-gtk-*.so
 #%attr(755,root,root) %{_libdir}/swt/%{_swtgtkdir}_*.*.*/os/linux/%{_eclipse_arch}/libswt-kde-gtk*.so
