@@ -3,10 +3,11 @@
 %bcond_without	gnome		# build without gnome
 %bcond_without	cairo		# build without cairo
 #
-%define   _buildid  200506271435
+%define   _buildid  200509290840
 #define   _mver   M6
-%define   _ver_major  3.1
+%define   _ver_major  3.1.1
 %define   _ver_minor  0
+%define   _ver_swt    3139
 %define   _ver    %{_ver_major}.%{_ver_minor}
 
 %ifarch %{x8664}
@@ -40,7 +41,7 @@ License:	CPL v1.0
 Group:		Libraries
 #Source0:	http://download.eclipse.org/downloads/drops/S-%{_ver_major}%{_mver}-%{_buildid}/eclipse-sourceBuild-srcIncluded-%{_ver_major}%{_mver}.zip
 Source0:	http://download.eclipse.org/eclipse/downloads/drops/R-%{_ver_major}-%{_buildid}/eclipse-sourceBuild-srcIncluded-%{_ver_major}.zip
-# Source0-md5:  19ad65d52005da5eaa1d3687b3a50de2
+# Source0-md5:	0d78d5f8afe767014a1cc69ee8c20869
 Patch0:		%{name}-NULL.patch
 Patch1:		%{name}-makefile.patch
 Patch2:		%{name}-nognome.patch
@@ -118,15 +119,38 @@ export JAVA_INC="-I$JAVA_HOME/include -I$JAVA_HOME/include/linux"
 #{__make} -f make_linux.mak make_mozilla \
 #    OPT="%{rpmcflags}"
 
+cd ../%{_swtsrcdir}
+ant build.jars
+
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT%{_libdir}/swt/%{_swtgtkdir}_%{_ver_major}.%{_ver_minor}/os/linux/%{_eclipse_arch}
+install -d $RPM_BUILD_ROOT%{_libdir}/swt/%{_swtgtkdir}_%{_ver_major}.%{_ver_minor}/os/linux/%{_eclipse_arch} \
+	$RPM_BUILD_ROOT%{_javadir}
+
+install %{_swtsrcdir}/swt.jar $RPM_BUILD_ROOT%{_javadir}
+
 cd swt
 install libswt-*.so \
-    $RPM_BUILD_ROOT%{_libdir}/swt/%{_swtgtkdir}_%{_ver_major}.%{_ver_minor}/os/linux/%{_eclipse_arch}
+	$RPM_BUILD_ROOT%{_libdir}/swt/%{_swtgtkdir}_%{_ver_major}.%{_ver_minor}/os/linux/%{_eclipse_arch}
+
+ln -sf %{_libdir}/swt/%{_swtgtkdir}_%{_ver_major}.%{_ver_minor}/os/linux/%{_eclipse_arch}/libswt-atk-gtk-%{_ver_swt}.so \
+	$RPM_BUILD_ROOT%{_libdir}/swt
+ln -sf %{_libdir}/swt/%{_swtgtkdir}_%{_ver_major}.%{_ver_minor}/os/linux/%{_eclipse_arch}/libswt-awt-gtk-%{_ver_swt}.so \
+	$RPM_BUILD_ROOT%{_libdir}/swt
+ln -sf %{_libdir}/swt/%{_swtgtkdir}_%{_ver_major}.%{_ver_minor}/os/linux/%{_eclipse_arch}/libswt-gtk-%{_ver_swt}.so \
+	$RPM_BUILD_ROOT%{_libdir}/swt
+ln -sf %{_libdir}/swt/%{_swtgtkdir}_%{_ver_major}.%{_ver_minor}/os/linux/%{_eclipse_arch}/libswt-mozilla-gtk-%{_ver_swt}.so \
+	$RPM_BUILD_ROOT%{_libdir}/swt
+ln -sf %{_libdir}/swt/%{_swtgtkdir}_%{_ver_major}.%{_ver_minor}/os/linux/%{_eclipse_arch}/libswt-pi-gtk-%{_ver_swt}.so \
+	$RPM_BUILD_ROOT%{_libdir}/swt
 
 %if %{with cairo}
 install libcairo.so* $RPM_BUILD_ROOT%{_libdir}/swt
+%endif
+
+%if %{with gnome}
+ln -sf %{_libdir}/swt/%{_swtgtkdir}_%{_ver_major}.%{_ver_minor}/os/linux/%{_eclipse_arch}/libswt-gnome-gtk-%{_ver_swt}.so \
+	$RPM_BUILD_ROOT%{_libdir}/swt
 %endif
 
 install *.html $RPM_BUILD_ROOT%{_libdir}/swt
@@ -142,8 +166,10 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/swt/%{_swtgtkdir}_*.*.*/os
 %dir %{_libdir}/swt/%{_swtgtkdir}_*.*.*/os/linux
 %dir %{_libdir}/swt/%{_swtgtkdir}_*.*.*/os/linux/%{_eclipse_arch}
+%{_javadir}/swt.jar
 %{_libdir}/swt/about_files
 %{_libdir}/swt/about.html
+%{_libdir}/swt/libswt-*-%{_ver_swt}.so
 %attr(755,root,root) %{_libdir}/swt/%{_swtgtkdir}_*.*.*/os/linux/%{_eclipse_arch}/libswt-atk-gtk-*.so
 %attr(755,root,root) %{_libdir}/swt/%{_swtgtkdir}_*.*.*/os/linux/%{_eclipse_arch}/libswt-awt-gtk-*.so
 %if %{with gnome}
