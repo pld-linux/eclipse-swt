@@ -49,7 +49,7 @@ URL:		http://www.eclipse.org/swt
 BuildRequires:	atk-devel
 %{?with_cairo:BuildRequires:  cairo-devel}
 BuildRequires:  gtk+2-devel >= 2.0.0
-BuildRequires:	jakarta-ant >= 1.6.1
+BuildRequires:	ant >= 1.6.1
 BuildRequires:	jdk >= 1.4
 %{?with_gnome:BuildRequires:  libgnomeui-devel}
 BuildRequires:	mozilla-devel
