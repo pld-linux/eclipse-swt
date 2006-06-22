@@ -1,11 +1,11 @@
 #
 # Conditional build:
 %bcond_without	gnome		# build without gnome
-%bcond_without	cairo		# build without cairo
+%bcond_with	cairo		# build with cairo
 #
-%define   _buildid  200509290840
+%define   _buildid  200601181600
 #define   _mver   M6
-%define   _ver_major  3.1.1
+%define   _ver_major  3.1.2
 %define   _ver_minor  0
 %define   _ver_swt    3139
 %define   _ver    %{_ver_major}.%{_ver_minor}
@@ -41,7 +41,7 @@ License:	CPL v1.0
 Group:		Libraries
 #Source0:	http://download.eclipse.org/downloads/drops/S-%{_ver_major}%{_mver}-%{_buildid}/eclipse-sourceBuild-srcIncluded-%{_ver_major}%{_mver}.zip
 Source0:	http://download.eclipse.org/eclipse/downloads/drops/R-%{_ver_major}-%{_buildid}/eclipse-sourceBuild-srcIncluded-%{_ver_major}.zip
-# Source0-md5:	0d78d5f8afe767014a1cc69ee8c20869
+# Source0-md5:	f2c8066151de14c5ccdf420266ce9f39
 Patch0:		%{name}-NULL.patch
 Patch1:		%{name}-makefile.patch
 Patch2:		%{name}-nognome.patch
@@ -57,7 +57,7 @@ BuildRequires:	pkgconfig
 BuildRequires:	rpmbuild(macros) >= 1.213
 BuildRequires:	unzip
 BuildRequires:	zip
-Requires:	jakarta-ant
+Requires:	ant
 Requires:	jdk >= 1.4
 ExclusiveArch:	%{ix86} %{x8664} ppc
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -74,7 +74,7 @@ systemach operacyjnych, na których zosta³ zaimplementowany.
 
 %prep
 %setup -q -c
-JAVA_HOME=%{_libdir}/java
+JAVA_HOME=%{java_home}
 export JAVA_HOME
 cd %{_swtsrcdir}
 ant src.zip
@@ -92,7 +92,7 @@ patch -p0 < %{PATCH1}
 patch -p0 < %{PATCH2}
 %endif
 
-JAVA_HOME=%{_libdir}/java
+JAVA_HOME=%{java_home}
 export JAVA_HOME
 export JAVA_INC="-I$JAVA_HOME/include -I$JAVA_HOME/include/linux"
 %{__make} -f make_linux.mak all \
