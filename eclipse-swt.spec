@@ -88,7 +88,7 @@ unzip -x %{_builddir}/%{name}-%{version}/%{_swtsrcdir}/src.zip
 
 patch -p0 < %{PATCH0}
 patch -p0 < %{PATCH1}
-%if %{without gnome}
+%if !%{with gnome}
 patch -p0 < %{PATCH2}
 %endif
 
