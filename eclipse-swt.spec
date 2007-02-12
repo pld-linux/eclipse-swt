@@ -32,7 +32,7 @@
 %endif
 
 Summary:	SWT - a widget toolkit for Java
-Summary(pl.UTF-8):   SWT - zestaw widgetów dla Javy
+Summary(pl.UTF-8):	SWT - zestaw widgetów dla Javy
 Name:		eclipse-swt
 Version:	%{_ver_major}
 #Release:	0.%{_mver}_%{_buildid}.1
