@@ -32,7 +32,7 @@
 %endif
 
 Summary:	SWT - a widget toolkit for Java
-Summary(pl):	SWT - zestaw widgetów dla Javy
+Summary(pl.UTF-8):   SWT - zestaw widgetÃ³w dla Javy
 Name:		eclipse-swt
 Version:	%{_ver_major}
 #Release:	0.%{_mver}_%{_buildid}.1
@@ -67,10 +67,10 @@ SWT is a widget toolkit for Java designed to provide efficient,
 portable access to the user-interface facilities of the operating
 systems on which it is implemented.
 
-%description -l pl
-SWT to zestaw widgetów dla Javy zaprojektowany aby dostarczyæ wydajny,
-przeno¶ny dostêp do udogodnieñ interfejsu u¿ytkownika na tych
-systemach operacyjnych, na których zosta³ zaimplementowany.
+%description -l pl.UTF-8
+SWT to zestaw widgetÃ³w dla Javy zaprojektowany aby dostarczyÄ‡ wydajny,
+przenoÅ›ny dostÄ™p do udogodnieÅ„ interfejsu uÅ¼ytkownika na tych
+systemach operacyjnych, na ktÃ³rych zostaÅ‚ zaimplementowany.
 
 %prep
 %setup -q -c
