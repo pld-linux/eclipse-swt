@@ -1,13 +1,17 @@
+# NOTE
+# - build instructions: http://www.eclipse.org/swt/faq.php#howbuilddll
 #
 # Conditional build:
 %bcond_without	gnome		# build without gnome
+%bcond_without	xulrunner		# build without xulrunner
+%bcond_without	glx		# build without glx
 %bcond_with	cairo		# build with cairo
 #
-%define   _buildid  200601181600
+%define   _buildid  200706251500
 #define   _mver   M6
-%define   _ver_major  3.1.2
+%define   _ver_major  3.3
 %define   _ver_minor  0
-%define   _ver_swt    3139
+%define   _ver_swt    3346
 %define   _ver    %{_ver_major}.%{_ver_minor}
 
 %ifarch %{x8664}
@@ -19,7 +23,7 @@
 %define _swtsrcdir  plugins/org.eclipse.swt.gtk.linux.ppc
 %define _swtgtkdir  plugins/org.eclipse.swt.gtk.linux.ppc
 %endif
-  
+
 %ifarch %{ix86}
 %define _swtsrcdir  plugins/org.eclipse.swt.gtk.linux.x86
 %define _swtgtkdir  plugins/org.eclipse.swt.gtk.linux.x86
@@ -40,22 +44,24 @@ Release:	0.1
 License:	CPL v1.0
 Group:		Libraries
 #Source0:	http://download.eclipse.org/downloads/drops/S-%{_ver_major}%{_mver}-%{_buildid}/eclipse-sourceBuild-srcIncluded-%{_ver_major}%{_mver}.zip
-Source0:	http://download.eclipse.org/eclipse/downloads/drops/R-%{_ver_major}-%{_buildid}/eclipse-sourceBuild-srcIncluded-%{_ver_major}.zip
-# Source0-md5:	f2c8066151de14c5ccdf420266ce9f39
+# Source0-md5:	91c688221479986dbdd7d1a0771f04cc
+Source0:	http://download.eclipse.org/eclipse/downloads/drops/R-%{_ver_major}-%{_buildid}/eclipse-sourceBuild-srcIncluded-%{version}.zip
 Patch0:		%{name}-NULL.patch
 Patch1:		%{name}-makefile.patch
 Patch2:		%{name}-nognome.patch
 URL:		http://www.eclipse.org/swt
+%{?with_glx:BuildRequires:	OpenGL-devel}
+BuildRequires:	ant >= 1.6.1
 BuildRequires:	atk-devel
 %{?with_cairo:BuildRequires:  cairo-devel}
-BuildRequires:  gtk+2-devel >= 2.0.0
-BuildRequires:	ant >= 1.6.1
+BuildRequires:	gtk+2-devel >= 2.0.0
 BuildRequires:	jdk >= 1.4
 %{?with_gnome:BuildRequires:  libgnomeui-devel}
-BuildRequires:	mozilla-devel
+%{?with_xulrunner:BuildRequires:	libstdc++-devel}
 BuildRequires:	pkgconfig
 BuildRequires:	rpmbuild(macros) >= 1.213
 BuildRequires:	unzip
+%{?with_xulrunner:BuildRequires:	xulrunner-devel}
 BuildRequires:	zip
 Requires:	ant
 Requires:	jdk >= 1.4
@@ -74,87 +80,48 @@ systemach operacyjnych, na których został zaimplementowany.
 
 %prep
 %setup -q -c
-JAVA_HOME=%{java_home}
-export JAVA_HOME
-cd %{_swtsrcdir}
-ant src.zip
+%ant -f %{_swtsrcdir}/build.xml src.zip
+mkdir swt
+cd swt
+%{__unzip} -qq -o ../%{_swtsrcdir}/src.zip
+%patch0 -p0
+%patch2 -p0
 
 %build
-rm -rf swt
-mkdir swt 
-cd swt
+%{__make} -f make_linux.mak -C swt \
+	make_swt make_atk \
+	%{?with_glx:make_glx} \
+	%{?with_gnome:make_gnome} \
+	%{?with_cairo:make_cairo} \
+	%{?with_xulrunner:make_xulrunner XULRUNNER_INCLUDES="$(pkg-config --cflags xulrunner-xpcom)"} \
+	all \
+	JAVA_HOME="%{java_home}" \
+	CC="%{__cc}" \
+	CXX="%{__cxx}" \
+	XTEST_LIB_PATH=%{_prefix}/X11R6/%{_lib} \
+	OPT="%{rpmcflags}"
 
-unzip -x %{_builddir}/%{name}-%{version}/%{_swtsrcdir}/src.zip
-
-patch -p0 < %{PATCH0}
-patch -p0 < %{PATCH1}
-%if !%{with gnome}
-patch -p0 < %{PATCH2}
-%endif
-
-JAVA_HOME=%{java_home}
-export JAVA_HOME
-export JAVA_INC="-I$JAVA_HOME/include -I$JAVA_HOME/include/linux"
-%{__make} -f make_linux.mak all \
-    CC="%{__cc}" \
-    CXX="%{__cxx}" \
-    XTEST_LIB_PATH=%{_prefix}/X11R6/%{_lib} \
-    OPT="%{rpmcflags}"
-
-%if %{with cairo}
-%{__make} -f make_linux.mak make_cairo \
-    CC="%{__cc}" \
-    CXX="%{__cxx}" \
-    XTEST_LIB_PATH=%{_prefix}/X11R6/%{_lib} \
-    OPT="%{rpmcflags}"
-%endif
-
-%{__make} -f make_linux.mak make_mozilla \
-    CC="%{__cc}" \
-    CXX="%{__cxx}" \
-    XTEST_LIB_PATH=%{_prefix}/X11R6/%{_lib} \
-    OPT="%{rpmcflags}"
-
-#cp library/* .
-#{__make} -f make_linux.mak make_mozilla \
-#    OPT="%{rpmcflags}"
-
-cd ../%{_swtsrcdir}
-ant build.jars
+%ant -f %{_swtsrcdir}/build.xml build.jars
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT%{_libdir}/swt/%{_swtgtkdir}_%{_ver_major}.%{_ver_minor}/os/linux/%{_eclipse_arch} \
-	$RPM_BUILD_ROOT%{_javadir}
-
+install -d $RPM_BUILD_ROOT%{_javadir}
 install %{_swtsrcdir}/swt.jar $RPM_BUILD_ROOT%{_javadir}
 
-cd swt
-install libswt-*.so \
-	$RPM_BUILD_ROOT%{_libdir}/swt/%{_swtgtkdir}_%{_ver_major}.%{_ver_minor}/os/linux/%{_eclipse_arch}
-
-ln -sf %{_libdir}/swt/%{_swtgtkdir}_%{_ver_major}.%{_ver_minor}/os/linux/%{_eclipse_arch}/libswt-atk-gtk-%{_ver_swt}.so \
-	$RPM_BUILD_ROOT%{_libdir}/swt
-ln -sf %{_libdir}/swt/%{_swtgtkdir}_%{_ver_major}.%{_ver_minor}/os/linux/%{_eclipse_arch}/libswt-awt-gtk-%{_ver_swt}.so \
-	$RPM_BUILD_ROOT%{_libdir}/swt
-ln -sf %{_libdir}/swt/%{_swtgtkdir}_%{_ver_major}.%{_ver_minor}/os/linux/%{_eclipse_arch}/libswt-gtk-%{_ver_swt}.so \
-	$RPM_BUILD_ROOT%{_libdir}/swt
-ln -sf %{_libdir}/swt/%{_swtgtkdir}_%{_ver_major}.%{_ver_minor}/os/linux/%{_eclipse_arch}/libswt-mozilla-gtk-%{_ver_swt}.so \
-	$RPM_BUILD_ROOT%{_libdir}/swt
-ln -sf %{_libdir}/swt/%{_swtgtkdir}_%{_ver_major}.%{_ver_minor}/os/linux/%{_eclipse_arch}/libswt-pi-gtk-%{_ver_swt}.so \
-	$RPM_BUILD_ROOT%{_libdir}/swt
+dir=%{_libdir}/swt/%{_swtgtkdir}_%{_ver_major}.%{_ver_minor}/os/linux/%{_eclipse_arch}
+install -d $RPM_BUILD_ROOT$dir
+for a in swt/libswt-*.so; do
+	install $a $RPM_BUILD_ROOT$dir
+	lib=${a##*/}
+	ln -sf $dir/$lib $RPM_BUILD_ROOT%{_libdir}/swt
+done
 
 %if %{with cairo}
-install libcairo.so* $RPM_BUILD_ROOT%{_libdir}/swt
+install swt/libcairo.so* $RPM_BUILD_ROOT%{_libdir}/swt
 %endif
 
-%if %{with gnome}
-ln -sf %{_libdir}/swt/%{_swtgtkdir}_%{_ver_major}.%{_ver_minor}/os/linux/%{_eclipse_arch}/libswt-gnome-gtk-%{_ver_swt}.so \
-	$RPM_BUILD_ROOT%{_libdir}/swt
-%endif
-
-install *.html $RPM_BUILD_ROOT%{_libdir}/swt
-cp -rf about_files $RPM_BUILD_ROOT%{_libdir}/swt
+install swt/*.html $RPM_BUILD_ROOT%{_libdir}/swt
+cp -a swt/about_files $RPM_BUILD_ROOT%{_libdir}/swt
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -171,11 +138,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/swt/about.html
 %{_libdir}/swt/libswt-*-%{_ver_swt}.so
 %attr(755,root,root) %{_libdir}/swt/%{_swtgtkdir}_*.*.*/os/linux/%{_eclipse_arch}/libswt-atk-gtk-*.so
-%attr(755,root,root) %{_libdir}/swt/%{_swtgtkdir}_*.*.*/os/linux/%{_eclipse_arch}/libswt-awt-gtk-*.so
-%if %{with gnome}
-%attr(755,root,root) %{_libdir}/swt/%{_swtgtkdir}_*.*.*/os/linux/%{_eclipse_arch}/libswt-gnome-gtk-*.so
-%endif
+%{?with_glx:%attr(755,root,root) %{_libdir}/swt/%{_swtgtkdir}_*.*.*/os/linux/%{_eclipse_arch}/libswt-glx-gtk-*.so}
+%{?with_gnome:%attr(755,root,root) %{_libdir}/swt/%{_swtgtkdir}_*.*.*/os/linux/%{_eclipse_arch}/libswt-gnome-gtk-*.so}
 %attr(755,root,root) %{_libdir}/swt/%{_swtgtkdir}_*.*.*/os/linux/%{_eclipse_arch}/libswt-gtk-*.so
-#%attr(755,root,root) %{_libdir}/swt/%{_swtgtkdir}_*.*.*/os/linux/%{_eclipse_arch}/libswt-kde-gtk*.so
-%attr(755,root,root) %{_libdir}/swt/%{_swtgtkdir}_*.*.*/os/linux/%{_eclipse_arch}/libswt-mozilla-gtk-*.so
 %attr(755,root,root) %{_libdir}/swt/%{_swtgtkdir}_*.*.*/os/linux/%{_eclipse_arch}/libswt-pi-gtk-*.so
+%{?with_xulrunner:%attr(755,root,root) %{_libdir}/swt/%{_swtgtkdir}_*.*.*/os/linux/%{_eclipse_arch}/libswt-xulrunner-gtk-*.so}
