@@ -40,7 +40,7 @@ Summary(pl.UTF-8):	SWT - zestaw widgetów dla Javy
 Name:		eclipse-swt
 Version:	%{_ver_major}
 #Release:	0.%{_mver}_%{_buildid}.1
-Release:	0.1
+Release:	1
 License:	CPL v1.0
 Group:		Libraries
 #Source0:	http://download.eclipse.org/downloads/drops/S-%{_ver_major}%{_mver}-%{_buildid}/eclipse-sourceBuild-srcIncluded-%{_ver_major}%{_mver}.zip
@@ -109,7 +109,7 @@ install -d $RPM_BUILD_ROOT$dir
 for a in swt/libswt-*.so; do
 	install $a $RPM_BUILD_ROOT$dir
 	lib=${a##*/}
-	ln -sf $dir/$lib $RPM_BUILD_ROOT%{_libdir}/swt
+	ln -sf ${dir#%{_libdir}/swt/}/$lib $RPM_BUILD_ROOT%{_libdir}/swt
 done
 
 %if %{with cairo}
