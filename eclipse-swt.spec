@@ -67,6 +67,10 @@ systemach operacyjnych, na których został zaimplementowany.
 
 %prep
 %setup -q -c
+%ifarch %{x8664}
+# probably broken only in 3.3.1.1
+%{__sed} -i -e 's,${basedir}/src/Eclipse SWT,${plugindir}/Eclipse SWT,' %{swtsrcdir}/build.xml
+%endif
 %ant -f %{swtsrcdir}/build.xml src.zip
 mkdir swt
 cd swt
