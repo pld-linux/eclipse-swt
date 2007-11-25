@@ -61,11 +61,6 @@ Requires:	jdk >= 1.4
 ExclusiveArch:	%{ix86} %{x8664} ppc
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define		no_install_post_chrpath	1
-%ifarch %{x8664}
-%define		_noautostrip	.*\\.so
-%endif
-
 %description
 SWT is a widget toolkit for Java designed to provide efficient,
 portable access to the user-interface facilities of the operating
