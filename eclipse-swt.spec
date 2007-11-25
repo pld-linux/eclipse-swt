@@ -6,12 +6,8 @@
 %bcond_without	xulrunner	# build without xulrunner
 %bcond_without	glx		# build without GLX
 %bcond_with	cairo		# build with cairo
-#
-%define	buildid  200706251500
-#define	mver   M6
-%define	ver_major  3.3
-%define	ver_minor  0
-%define	ver_swt    3346
+
+%define	buildid		200710231652
 
 %ifarch %{x8664}
 %define	swtsrcdir	plugins/org.eclipse.swt.gtk.linux.x86_64
@@ -33,14 +29,12 @@
 Summary:	SWT - a widget toolkit for Java
 Summary(pl.UTF-8):	SWT - zestaw widgetów dla Javy
 Name:		eclipse-swt
-Version:	%{ver_major}
-#Release:	0.%{mver}_%{buildid}.1
+Version:	3.3.1.1
 Release:	1
 License:	CPL v1.0
 Group:		Libraries
-#Source0:	http://download.eclipse.org/downloads/drops/S-%{ver_major}%{mver}-%{buildid}/eclipse-sourceBuild-srcIncluded-%{ver_major}%{mver}.zip
-Source0:	http://download.eclipse.org/eclipse/downloads/drops/R-%{ver_major}-%{buildid}/eclipse-sourceBuild-srcIncluded-%{version}.zip
-# Source0-md5:	91c688221479986dbdd7d1a0771f04cc
+Source0:	http://download.eclipse.org/eclipse/downloads/drops/R-%{version}-%{buildid}/eclipse-sourceBuild-srcIncluded-%{version}.zip
+# Source0-md5:	593b56fce7d1f1f799e87365cafefbef
 Patch0:		%{name}-NULL.patch
 URL:		http://www.eclipse.org/swt/
 %{?with_glx:BuildRequires:	OpenGL-devel}
@@ -99,7 +93,7 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_javadir}
 install %{swtsrcdir}/swt.jar $RPM_BUILD_ROOT%{_javadir}
 
-dir=%{_libdir}/swt/%{swtgtkdir}_%{ver_major}.%{ver_minor}/os/linux/%{eclipse_arch}
+dir=%{_libdir}/swt/%{swtgtkdir}_%{version}/os/linux/%{eclipse_arch}
 install -d $RPM_BUILD_ROOT$dir
 for a in swt/libswt-*.so; do
 	install $a $RPM_BUILD_ROOT$dir
@@ -120,6 +114,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %dir %{_libdir}/swt
+%dir %{_libdir}/swt/plugins
 %dir %{_libdir}/swt/%{swtgtkdir}_*.*.*
 %dir %{_libdir}/swt/%{swtgtkdir}_*.*.*/os
 %dir %{_libdir}/swt/%{swtgtkdir}_*.*.*/os/linux
@@ -127,7 +122,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_javadir}/swt.jar
 %{_libdir}/swt/about_files
 %{_libdir}/swt/about.html
-%{_libdir}/swt/libswt-*-%{ver_swt}.so
+%{_libdir}/swt/libswt-*-*.so
 %attr(755,root,root) %{_libdir}/swt/%{swtgtkdir}_*.*.*/os/linux/%{eclipse_arch}/libswt-atk-gtk-*.so
 %{?with_glx:%attr(755,root,root) %{_libdir}/swt/%{swtgtkdir}_*.*.*/os/linux/%{eclipse_arch}/libswt-glx-gtk-*.so}
 %{?with_gnome:%attr(755,root,root) %{_libdir}/swt/%{swtgtkdir}_*.*.*/os/linux/%{eclipse_arch}/libswt-gnome-gtk-*.so}
