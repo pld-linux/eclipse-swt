@@ -47,8 +47,6 @@ Group:		Libraries
 # Source0-md5:	91c688221479986dbdd7d1a0771f04cc
 Source0:	http://download.eclipse.org/eclipse/downloads/drops/R-%{_ver_major}-%{_buildid}/eclipse-sourceBuild-srcIncluded-%{version}.zip
 Patch0:		%{name}-NULL.patch
-Patch1:		%{name}-makefile.patch
-Patch2:		%{name}-nognome.patch
 URL:		http://www.eclipse.org/swt
 %{?with_glx:BuildRequires:	OpenGL-devel}
 BuildRequires:	ant >= 1.6.1
@@ -85,7 +83,6 @@ mkdir swt
 cd swt
 %{__unzip} -qq -o ../%{_swtsrcdir}/src.zip
 %patch0 -p0
-%patch2 -p0
 
 %build
 %{__make} -f make_linux.mak -C swt \
@@ -94,7 +91,6 @@ cd swt
 	%{?with_gnome:make_gnome} \
 	%{?with_cairo:make_cairo} \
 	%{?with_xulrunner:make_xulrunner XULRUNNER_INCLUDES="$(pkg-config --cflags xulrunner-xpcom)"} \
-	all \
 	JAVA_HOME="%{java_home}" \
 	CC="%{__cc}" \
 	CXX="%{__cxx}" \
