@@ -26,6 +26,7 @@
 
 %define	eclipse_arch	%(echo %{_target_cpu} | sed 's/i.86/x86/;s/athlon/x86/;s/pentium./x86/')
 
+%include	/usr/lib/rpm/macros.java
 Summary:	SWT - a widget toolkit for Java
 Summary(pl.UTF-8):	SWT - zestaw widgetów dla Javy
 Name:		eclipse-swt
@@ -46,11 +47,11 @@ BuildRequires:	jdk >= 1.4
 %{?with_gnome:BuildRequires:  libgnomeui-devel}
 %{?with_xulrunner:BuildRequires:	libstdc++-devel}
 BuildRequires:	pkgconfig
-BuildRequires:	rpmbuild(macros) >= 1.213
+BuildRequires:	rpm-javaprov
+BuildRequires:	rpmbuild(macros) >= 1.300
 BuildRequires:	unzip
 %{?with_xulrunner:BuildRequires:	xulrunner-devel}
 BuildRequires:	zip
-Requires:	ant
 Requires:	jdk >= 1.4
 ExclusiveArch:	%{ix86} %{x8664} ppc
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
