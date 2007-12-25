@@ -31,7 +31,7 @@ Summary:	SWT - a widget toolkit for Java
 Summary(pl.UTF-8):	SWT - zestaw widgetów dla Javy
 Name:		eclipse-swt
 Version:	3.3.1.1
-Release:	1
+Release:	2
 License:	CPL v1.0
 Group:		Libraries
 Source0:	http://download.eclipse.org/eclipse/downloads/drops/R-%{version}-%{buildid}/eclipse-sourceBuild-srcIncluded-%{version}.zip
