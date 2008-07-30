@@ -31,7 +31,7 @@ Summary:	SWT - a widget toolkit for Java
 Summary(pl.UTF-8):	SWT - zestaw widgetów dla Javy
 Name:		eclipse-swt
 Version:	3.3.1.1
-Release:	2
+Release:	3
 License:	CPL v1.0
 Group:		Libraries
 Source0:	http://download.eclipse.org/eclipse/downloads/drops/R-%{version}-%{buildid}/eclipse-sourceBuild-srcIncluded-%{version}.zip
@@ -50,7 +50,7 @@ BuildRequires:	pkgconfig
 BuildRequires:	rpm-javaprov
 BuildRequires:	rpmbuild(macros) >= 1.300
 BuildRequires:	unzip
-%{?with_xulrunner:BuildRequires:	xulrunner-devel}
+%{?with_xulrunner:BuildRequires:	xulrunner-devel >= 1.9}
 BuildRequires:	zip
 Requires:	jdk >= 1.4
 Requires:	jpackage-utils
@@ -85,7 +85,7 @@ cd swt
 	%{?with_glx:make_glx} \
 	%{?with_gnome:make_gnome} \
 	%{?with_cairo:make_cairo} \
-	%{?with_xulrunner:make_xulrunner XULRUNNER_INCLUDES="$(pkg-config --cflags xulrunner-xpcom)"} \
+	%{?with_xulrunner:make_xulrunner XULRUNNER_INCLUDES="$(pkg-config --cflags libxul)"} \
 	JAVA_HOME="%{java_home}" \
 	CC="%{__cc}" \
 	CXX="%{__cxx}" \
