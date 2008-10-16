@@ -5,7 +5,7 @@
 %bcond_without	gnome		# build without GNOME
 %bcond_without	xulrunner	# build without xulrunner
 %bcond_without	glx		# build without GLX
-%bcond_with	cairo		# build with cairo
+%bcond_without	cairo		# build without cairo
 
 %define	buildid		200710231652
 
@@ -31,7 +31,7 @@ Summary:	SWT - a widget toolkit for Java
 Summary(pl.UTF-8):	SWT - zestaw widgetów dla Javy
 Name:		eclipse-swt
 Version:	3.3.1.1
-Release:	3
+Release:	4
 License:	CPL v1.0
 Group:		Libraries
 Source0:	http://download.eclipse.org/eclipse/downloads/drops/R-%{version}-%{buildid}/eclipse-sourceBuild-srcIncluded-%{version}.zip
@@ -107,10 +107,6 @@ for a in swt/libswt-*.so; do
 	ln -sf ${dir#%{_libdir}/swt/}/$lib $RPM_BUILD_ROOT%{_libdir}/swt
 done
 
-%if %{with cairo}
-install swt/libcairo.so* $RPM_BUILD_ROOT%{_libdir}/swt
-%endif
-
 install swt/*.html $RPM_BUILD_ROOT%{_libdir}/swt
 cp -a swt/about_files $RPM_BUILD_ROOT%{_libdir}/swt
 
@@ -130,6 +126,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/swt/about.html
 %{_libdir}/swt/libswt-*-*.so
 %attr(755,root,root) %{_libdir}/swt/%{swtgtkdir}_*.*.*/os/linux/%{eclipse_arch}/libswt-atk-gtk-*.so
+%{?with_cairo:%attr(755,root,root) %{_libdir}/swt/%{swtgtkdir}_*.*.*/os/linux/%{eclipse_arch}/libswt-cairo-gtk-*.so}
 %{?with_glx:%attr(755,root,root) %{_libdir}/swt/%{swtgtkdir}_*.*.*/os/linux/%{eclipse_arch}/libswt-glx-gtk-*.so}
 %{?with_gnome:%attr(755,root,root) %{_libdir}/swt/%{swtgtkdir}_*.*.*/os/linux/%{eclipse_arch}/libswt-gnome-gtk-*.so}
 %attr(755,root,root) %{_libdir}/swt/%{swtgtkdir}_*.*.*/os/linux/%{eclipse_arch}/libswt-gtk-*.so
