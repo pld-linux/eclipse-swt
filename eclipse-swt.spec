@@ -31,7 +31,7 @@ Summary:	SWT - a widget toolkit for Java
 Summary(pl.UTF-8):	SWT - zestaw widgetów dla Javy
 Name:		eclipse-swt
 Version:	3.4
-Release:	1
+Release:	2
 License:	CPL v1.0
 Group:		Libraries
 Source0:	http://download.eclipse.org/eclipse/downloads/drops/R-%{version}-%{buildid}/eclipse-sourceBuild-srcIncluded-%{version}.zip
@@ -117,18 +117,18 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %dir %{_libdir}/swt
 %dir %{_libdir}/swt/plugins
-%dir %{_libdir}/swt/%{swtgtkdir}_*.*.*
-%dir %{_libdir}/swt/%{swtgtkdir}_*.*.*/os
-%dir %{_libdir}/swt/%{swtgtkdir}_*.*.*/os/linux
-%dir %{_libdir}/swt/%{swtgtkdir}_*.*.*/os/linux/%{eclipse_arch}
+%dir %{_libdir}/swt/%{swtgtkdir}_%{version}
+%dir %{_libdir}/swt/%{swtgtkdir}_%{version}/os
+%dir %{_libdir}/swt/%{swtgtkdir}_%{version}/os/linux
+%dir %{_libdir}/swt/%{swtgtkdir}_%{version}/os/linux/%{eclipse_arch}
 %{_javadir}/swt.jar
 %{_libdir}/swt/about_files
 %{_libdir}/swt/about.html
 %{_libdir}/swt/libswt-*-*.so
-%attr(755,root,root) %{_libdir}/swt/%{swtgtkdir}_*.*.*/os/linux/%{eclipse_arch}/libswt-atk-gtk-*.so
-%{?with_cairo:%attr(755,root,root) %{_libdir}/swt/%{swtgtkdir}_*.*.*/os/linux/%{eclipse_arch}/libswt-cairo-gtk-*.so}
-%{?with_glx:%attr(755,root,root) %{_libdir}/swt/%{swtgtkdir}_*.*.*/os/linux/%{eclipse_arch}/libswt-glx-gtk-*.so}
-%{?with_gnome:%attr(755,root,root) %{_libdir}/swt/%{swtgtkdir}_*.*.*/os/linux/%{eclipse_arch}/libswt-gnome-gtk-*.so}
-%attr(755,root,root) %{_libdir}/swt/%{swtgtkdir}_*.*.*/os/linux/%{eclipse_arch}/libswt-gtk-*.so
-%attr(755,root,root) %{_libdir}/swt/%{swtgtkdir}_*.*.*/os/linux/%{eclipse_arch}/libswt-pi-gtk-*.so
-%{?with_xulrunner:%attr(755,root,root) %{_libdir}/swt/%{swtgtkdir}_*.*.*/os/linux/%{eclipse_arch}/libswt-xulrunner-gtk-*.so}
+%attr(755,root,root) %{_libdir}/swt/%{swtgtkdir}_%{version}/os/linux/%{eclipse_arch}/libswt-atk-gtk-*.so
+%{?with_cairo:%attr(755,root,root) %{_libdir}/swt/%{swtgtkdir}_%{version}/os/linux/%{eclipse_arch}/libswt-cairo-gtk-*.so}
+%{?with_glx:%attr(755,root,root) %{_libdir}/swt/%{swtgtkdir}_%{version}/os/linux/%{eclipse_arch}/libswt-glx-gtk-*.so}
+%{?with_gnome:%attr(755,root,root) %{_libdir}/swt/%{swtgtkdir}_%{version}/os/linux/%{eclipse_arch}/libswt-gnome-gtk-*.so}
+%attr(755,root,root) %{_libdir}/swt/%{swtgtkdir}_%{version}/os/linux/%{eclipse_arch}/libswt-gtk-*.so
+%attr(755,root,root) %{_libdir}/swt/%{swtgtkdir}_%{version}/os/linux/%{eclipse_arch}/libswt-pi-gtk-*.so
+%{?with_xulrunner:%attr(755,root,root) %{_libdir}/swt/%{swtgtkdir}_%{version}/os/linux/%{eclipse_arch}/libswt-xulrunner-gtk-*.so}
