@@ -7,7 +7,7 @@
 %bcond_without	glx		# build without GLX
 %bcond_without	cairo		# build without cairo
 
-%define	buildid		200710231652
+%define	buildid		200806172000
 
 %ifarch %{x8664}
 %define	swtsrcdir	plugins/org.eclipse.swt.gtk.linux.x86_64
@@ -30,12 +30,12 @@
 Summary:	SWT - a widget toolkit for Java
 Summary(pl.UTF-8):	SWT - zestaw widgetów dla Javy
 Name:		eclipse-swt
-Version:	3.3.1.1
-Release:	4
+Version:	3.4
+Release:	1
 License:	CPL v1.0
 Group:		Libraries
 Source0:	http://download.eclipse.org/eclipse/downloads/drops/R-%{version}-%{buildid}/eclipse-sourceBuild-srcIncluded-%{version}.zip
-# Source0-md5:	593b56fce7d1f1f799e87365cafefbef
+# Source0-md5:	555c99aee06fc52d2ec03995b5ac0710
 Patch0:		%{name}-NULL.patch
 URL:		http://www.eclipse.org/swt/
 %{?with_glx:BuildRequires:	OpenGL-devel}
