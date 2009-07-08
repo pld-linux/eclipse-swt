@@ -1,13 +1,16 @@
 # NOTE
 # - build instructions: http://www.eclipse.org/swt/faq.php#howbuilddll
 #
+# TODO
+# - check if any patches are needed
+#
 # Conditional build:
 %bcond_without	gnome		# build without GNOME
 %bcond_without	xulrunner	# build without xulrunner
 %bcond_without	glx		# build without GLX
 %bcond_without	cairo		# build without cairo
 
-%define	buildid		200806172000
+%define	buildid		200906111540
 
 %ifarch %{x8664}
 %define	swtsrcdir	plugins/org.eclipse.swt.gtk.linux.x86_64
@@ -30,12 +33,12 @@
 Summary:	SWT - a widget toolkit for Java
 Summary(pl.UTF-8):	SWT - zestaw widgetów dla Javy
 Name:		eclipse-swt
-Version:	3.4
-Release:	2
+Version:	3.5
+Release:	1
 License:	CPL v1.0
 Group:		Libraries
 Source0:	http://download.eclipse.org/eclipse/downloads/drops/R-%{version}-%{buildid}/eclipse-sourceBuild-srcIncluded-%{version}.zip
-# Source0-md5:	555c99aee06fc52d2ec03995b5ac0710
+# Source0-md5:	5bba586ef20f9c7a545382a104c513d6
 Patch0:		%{name}-NULL.patch
 URL:		http://www.eclipse.org/swt/
 %{?with_glx:BuildRequires:	OpenGL-devel}
@@ -85,7 +88,7 @@ cd swt
 	%{?with_glx:make_glx} \
 	%{?with_gnome:make_gnome} \
 	%{?with_cairo:make_cairo} \
-	%{?with_xulrunner:make_xulrunner XULRUNNER_INCLUDES="$(pkg-config --cflags libxul)"} \
+	%{?with_xulrunner:make_xulrunner XULRUNNER_INCLUDES="$(pkg-config --cflags libxul-embedding)"} \
 	JAVA_HOME="%{java_home}" \
 	CC="%{__cc}" \
 	CXX="%{__cxx}" \
