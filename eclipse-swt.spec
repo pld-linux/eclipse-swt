@@ -80,7 +80,6 @@ systemach operacyjnych, na których został zaimplementowany.
 mkdir swt
 cd swt
 %{__unzip} -qq -o ../%{swtsrcdir}/src.zip
-%patch0 -p0
 
 %build
 %{__make} -f make_linux.mak -C swt \
