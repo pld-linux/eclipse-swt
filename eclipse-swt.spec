@@ -38,7 +38,7 @@ Release:	1
 License:	CPL v1.0
 Group:		Libraries
 Source0:	http://download.eclipse.org/eclipse/downloads/drops/R-%{version}-%{buildid}/eclipse-sourceBuild-srcIncluded-%{version}.zip
-# Source0-md5:	d41d8cd98f00b204e9800998ecf8427e
+# Source0-md5:	5bba586ef20f9c7a545382a104c513d6
 URL:		http://www.eclipse.org/swt/
 %{?with_glx:BuildRequires:	OpenGL-devel}
 BuildRequires:	ant >= 1.6.1
