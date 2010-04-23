@@ -57,7 +57,6 @@ BuildRequires:	xorg-lib-libXtst-devel
 BuildRequires:	zip
 Requires:	jdk >= 1.4
 Requires:	jpackage-utils
-ExclusiveArch:	%{ix86} %{x8664} ppc
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
