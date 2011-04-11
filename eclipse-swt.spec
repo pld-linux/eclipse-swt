@@ -10,20 +10,20 @@
 %bcond_without	glx		# build without GLX
 %bcond_without	cairo		# build without cairo
 
-%define	buildid		200906111540
+%define	buildid		201102101200
 
 %ifarch %{x8664}
-%define	swtsrcdir	plugins/org.eclipse.swt.gtk.linux.x86_64
+%define	swtsrcdir	src/plugins/org.eclipse.swt.gtk.linux.x86_64
 %define	swtgtkdir	plugins/org.eclipse.swt.gtk.linux.x86_64
 %endif
 
 %ifarch ppc
-%define swtsrcdir	plugins/org.eclipse.swt.gtk.linux.ppc
+%define swtsrcdir	src/plugins/org.eclipse.swt.gtk.linux.ppc
 %define swtgtkdir	plugins/org.eclipse.swt.gtk.linux.ppc
 %endif
 
 %ifarch %{ix86}
-%define swtsrcdir	plugins/org.eclipse.swt.gtk.linux.x86
+%define swtsrcdir	src/plugins/org.eclipse.swt.gtk.linux.x86
 %define swtgtkdir	plugins/org.eclipse.swt.gtk.linux.x86
 %endif
 
@@ -33,12 +33,13 @@
 Summary:	SWT - a widget toolkit for Java
 Summary(pl.UTF-8):	SWT - zestaw widgetów dla Javy
 Name:		eclipse-swt
-Version:	3.5
+Version:	3.6.2
 Release:	1
 License:	CPL v1.0
 Group:		Libraries
 Source0:	http://download.eclipse.org/eclipse/downloads/drops/R-%{version}-%{buildid}/eclipse-sourceBuild-srcIncluded-%{version}.zip
-# Source0-md5:	5bba586ef20f9c7a545382a104c513d6
+# Source0-md5:	33a298ea33c6f24462aa0a02b9cda3d4
+Patch0:		eclipse-xpcom-h.patch
 URL:		http://www.eclipse.org/swt/
 %{?with_glx:BuildRequires:	OpenGL-devel}
 BuildRequires:	ant >= 1.6.1
@@ -71,14 +72,11 @@ systemach operacyjnych, na których został zaimplementowany.
 
 %prep
 %setup -q -c
-%ifarch %{x8664}
-# probably broken only in 3.3.1.1
-%{__sed} -i -e 's,${basedir}/src/Eclipse SWT,${plugindir}/Eclipse SWT,' %{swtsrcdir}/build.xml
-%endif
 %ant -f %{swtsrcdir}/build.xml src.zip
 mkdir swt
 cd swt
 %{__unzip} -qq -o ../%{swtsrcdir}/src.zip
+%patch0 -p0
 
 %build
 %{__make} -f make_linux.mak -C swt \
